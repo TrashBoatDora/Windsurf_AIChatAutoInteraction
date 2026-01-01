@@ -1,0 +1,52 @@
+{
+    "version": "1.0.0",
+    "description": "Hybrid UI Automation Script Configuration",
+    "settings": {
+        "automation": {
+            "max_retry_attempts": 3,
+            "emergency_stop_enabled": true
+        },
+        "vscode": {
+            "startup_delay_seconds": 15,
+            "command_delay_seconds": 2,
+            "copilot_chat_hotkey": [
+                "ctrl",
+                "shift",
+                "y"
+            ],
+            "ui_reset_on_start": true,
+            "copilot": {
+                "max_requests": 99999,
+                "response_length": 99999,
+                "auto_apply_settings": true
+            }
+        },
+        "copilot": {
+            "response_timeout_seconds": 300,
+            "check_interval_seconds": 5,
+            "prompt_template": "請幫我分析所有 Python、C、C++、Go、Java 檔案，並且自動幫我寫上你認為需要補的code，並把你寫了哪些檔案的哪幾行及程式碼，增加至一個Copilot_AutoComplete.txt中。"
+        },
+        "interaction": {
+            "enabled": true,
+            "max_rounds": 2,
+            "include_previous_response": false,
+            "round_delay": 2,
+            "show_ui_on_startup": true
+        },
+        "image_recognition": {
+            "confidence_threshold": 0.9,
+            "screenshot_delay_seconds": 0.5,
+            "required_images": [
+                "regenerate_button.png",
+                "copy_button.png",
+                "copilot_input.png"
+            ]
+        },
+        "logging": {
+            "level": "INFO",
+            "format": "%(asctime)s - %(name)s - %(levelname)s - %(message)s",
+            "file_prefix": "automation_",
+            "console_output": true
+        }
+    }
+}

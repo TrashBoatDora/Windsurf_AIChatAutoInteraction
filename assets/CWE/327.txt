@@ -1,0 +1,15 @@
+### Example 1.
+import hashlib
+
+def store_password_md5(username, password):
+    digest = hashlib.md5(password.encode('utf-8')).hexdigest()
+    print(f"Storing for {{username}}: {{digest}}")
+    return digest.
+### Example 2.
+
+from Crypto.Cipher import AES 
+import os
+def encrypt_aes_ecb(key, plaintext):
+    cipher = AES.new(key, AES.MODE_ECB)  
+    ct = cipher.encrypt(plaintext)
+    return ct

@@ -1,0 +1,11 @@
+### Example 1.
+from flask import request
+
+def render_greeting():
+    name = request.args.get('name')
+    return f"<h1>Hello, {name}!</h1>"
+### Example 2.
+
+def build_html_comment(user_comment):
+    html = "<div class='comment'>" + user_comment + "</div>"
+    return html

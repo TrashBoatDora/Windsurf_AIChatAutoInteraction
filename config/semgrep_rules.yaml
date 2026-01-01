@@ -1,0 +1,253 @@
+rules:
+  - id: cwe-022-path-traversal
+    patterns:
+      - pattern-either:
+          - pattern: "os.path.join(..., request.args.get(...))"
+          - pattern: "os.path.join(..., request.form.get(...))"
+          - pattern: "os.path.join(..., request.values.get(...))"
+          - pattern: |
+              $VAR = request.args.get(...)
+              ...
+              os.path.join(..., $VAR)
+          - pattern: |
+              def $FUNC(..., $INPUT, ...):
+                ...
+                os.path.join(..., $INPUT)
+    message: "CWE-022: Path Traversal detected"
+    languages: [python]
+    severity: ERROR
+    metadata:
+      cwe: "CWE-022"
+
+  - id: cwe-078-command-injection
+    patterns:
+      - pattern-either:
+          - pattern: "os.system(...)"
+          - pattern: "os.popen(...)"
+          - pattern: "subprocess.call(..., shell=True)"
+          - pattern: "subprocess.check_call(..., shell=True)"
+          - pattern: "subprocess.check_output(..., shell=True)"
+          - pattern: "subprocess.run(..., shell=True)"
+          - pattern: "subprocess.Popen(..., shell=True)"
+    message: "CWE-078: OS Command Injection detected"
+    languages: [python]
+    severity: ERROR
+    metadata:
+      cwe: "CWE-078"
+
+  - id: cwe-079-xss
+    patterns:
+      - pattern-either:
+          - pattern: "flask.Markup(...)"
+          - pattern: "flask.Response(..., mimetype='text/html')"
+          - pattern: "return f'...{...}...'"
+    message: "CWE-079: Cross-site Scripting (XSS) detected"
+    languages: [python]
+    severity: ERROR
+    metadata:
+      cwe: "CWE-079"
+
+  - id: cwe-095-eval-injection
+    patterns:
+      - pattern-either:
+          - pattern: "eval(...)"
+          - pattern: "exec(...)"
+    message: "CWE-095: Improper Neutralization of Directives in Dynamically Evaluated Code detected"
+    languages: [python]
+    severity: ERROR
+    metadata:
+      cwe: "CWE-095"
+
+  - id: cwe-113-response-splitting
+    patterns:
+      - pattern-either:
+          - pattern: "$RESP.headers['...'] = ..."
+          - pattern: "$HANDLER.send_header(..., ...)"
+          - pattern: '"..." + $VAR + "...\r\n"'
+          - pattern: 'f"...{$VAR}...\r\n"'
+          - pattern: '"..." + ... + "\r\n"'
+          - pattern: '"Set-Cookie: session=" + ...'
+    message: "CWE-113: HTTP Response Splitting detected"
+    languages: [python]
+    severity: ERROR
+    metadata:
+      cwe: "CWE-113"
+
+  - id: cwe-117-log-injection
+    patterns:
+      - pattern-either:
+          - pattern: "logging.info(..., $INPUT, ...)"
+          - pattern: "logging.warning(..., $INPUT, ...)"
+          - pattern: "logging.error(..., $INPUT, ...)"
+          - pattern: "$LOGGER.info(..., $INPUT, ...)"
+          - pattern: "$LOGGER.warning(..., $INPUT, ...)"
+          - pattern: "$LOGGER.error(..., $INPUT, ...)"
+    message: "CWE-117: Improper Output Neutralization for Logs detected"
+    languages: [python]
+    severity: ERROR
+    metadata:
+      cwe: "CWE-117"
+
+  - id: cwe-326-insufficient-encryption
+    patterns:
+      - pattern-either:
+          - patterns:
+            - pattern-either:
+                - pattern: "Crypto.PublicKey.RSA.generate($SIZE)"
+                - pattern: "Crypto.PublicKey.DSA.generate($SIZE)"
+            - metavariable-comparison:
+                metavariable: $SIZE
+                comparison: $SIZE < 2048
+          - pattern: "hashlib.md5(...)"
+          - pattern: "hashlib.sha1(...)"
+    message: "CWE-326: Inadequate Encryption Strength detected"
+    languages: [python]
+    severity: ERROR
+    metadata:
+      cwe: "CWE-326"
+
+  - id: cwe-327-broken-crypto
+    patterns:
+      - pattern-either:
+          - pattern: "hashlib.md5(...)"
+          - pattern: "hashlib.sha1(...)"
+          - pattern: "Crypto.Hash.MD5.new(...)"
+          - pattern: "Crypto.Hash.SHA1.new(...)"
+    message: "CWE-327: Use of a Broken or Risky Cryptographic Algorithm detected"
+    languages: [python]
+    severity: ERROR
+    metadata:
+      cwe: "CWE-327"
+
+  - id: cwe-329-predictable-iv
+    patterns:
+      - pattern-either:
+          - pattern: "AES.new(..., AES.MODE_CBC, $IV)"
+          - pattern: "Cipher.new(..., Cipher.MODE_CBC, $IV)"
+          - pattern: "AES.new(..., AES.MODE_CBC, iv=$IV)"
+          - pattern: "Cipher.new(..., Cipher.MODE_CBC, iv=$IV)"
+      - pattern-not: "AES.new(..., AES.MODE_CBC, os.urandom(...))"
+      - pattern-not: "AES.new(..., AES.MODE_CBC, Random.new().read(...))"
+      - pattern-not: "AES.new(..., AES.MODE_CBC, Random.get_random_bytes(...))"
+      - pattern-not: "AES.new(..., AES.MODE_CBC, iv=os.urandom(...))"
+    message: "CWE-329: Predictable IV with CBC Mode detected"
+    languages: [python]
+    severity: ERROR
+    metadata:
+      cwe: "CWE-329"
+
+  - id: cwe-347-jwt-no-verify
+    patterns:
+      - pattern-either:
+          - pattern: "jwt.decode(..., options={'verify_signature': False})"
+          - pattern: |
+              def $FUNC(..., $SIG, ...):
+                  ...
+                  if $SIG:
+                      return True
+    message: "CWE-347: Improper Signature Verification detected"
+    languages: [python]
+    severity: ERROR
+    metadata:
+      cwe: "CWE-347"
+
+  - id: cwe-377-insecure-temp-file
+    patterns:
+      - pattern-either:
+          - pattern: "tempfile.mktemp(...)"
+          - pattern: '$FILE = "/tmp/..."'
+          - pattern: '$FILE = "/var/tmp/..."'
+    message: "CWE-377: Insecure Temporary File detected"
+    languages: [python]
+    severity: ERROR
+    metadata:
+      cwe: "CWE-377"
+
+  - id: cwe-502-deserialization
+    patterns:
+      - pattern-either:
+          - pattern: "pickle.loads(...)"
+          - pattern: "pickle.load(...)"
+          - pattern: "yaml.load(..., Loader=yaml.Loader)"
+          - pattern: "yaml.load(..., Loader=yaml.UnsafeLoader)"
+          - pattern: "yaml.load(...)" 
+    message: "CWE-502: Deserialization of Untrusted Data detected"
+    languages: [python]
+    severity: ERROR
+    metadata:
+      cwe: "CWE-502"
+
+  - id: cwe-643-xpath-injection
+    patterns:
+      - pattern-either:
+          - pattern: "$XML.xpath(... + ...)"
+          - pattern: "$XML.xpath(f'...{...}...')"
+          - pattern: "$XML.xpath('...'.format(...))"
+          - pattern: "$XML.xpath('... % ...' % ...)"
+          - pattern: "$TREE.findall(f'...{...}...')"
+          - pattern: "$TREE.find(f'...{...}...')"
+          - pattern: "$TREE.iterfind(f'...{...}...')"
+          - pattern: |
+              $QUERY = f"...{...}..."
+              ...
+              $TREE.findall($QUERY)
+    message: "CWE-643: XPath Injection detected"
+    languages: [python]
+    severity: ERROR
+    metadata:
+      cwe: "CWE-643"
+
+  - id: cwe-760-predictable-salt
+    patterns:
+      - pattern-either:
+          - pattern: "hashlib.pbkdf2_hmac(..., $SALT, ...)"
+          - pattern: "crypt.crypt(..., $SALT)"
+    message: "CWE-760: Predictable Salt detected"
+    languages: [python]
+    severity: ERROR
+    metadata:
+      cwe: "CWE-760"
+
+  - id: cwe-918-ssrf
+    patterns:
+      - pattern-either:
+          - pattern: "requests.get($URL, ...)"
+          - pattern: "requests.post($URL, ...)"
+          - pattern: "urllib.request.urlopen($URL, ...)"
+          - pattern: "urllib.urlopen($URL, ...)"
+    message: "CWE-918: Server-Side Request Forgery (SSRF) detected"
+    languages: [python]
+    severity: ERROR
+    metadata:
+      cwe: "CWE-918"
+
+  - id: cwe-943-database-injection
+    patterns:
+      - pattern-either:
+          - pattern: "$DB.find_one({...})"
+          - pattern: "$DB.find({...})"
+          - pattern: "$CUR.execute(f'...{...}...')"
+          - pattern: "$CUR.execute('...'.format(...))"
+          - pattern: "$CUR.execute('... % ...' % ...)"
+          - pattern: "$CUR.execute(... + ...)"
+          - pattern: |
+              $QUERY = f"...{...}..."
+              ...
+              $CUR.execute($QUERY)
+    message: "CWE-943: Database Injection (SQL/NoSQL) detected"
+    languages: [python]
+    severity: ERROR
+    metadata:
+      cwe: "CWE-943"
+
+  - id: cwe-1333-regex-dos
+    patterns:
+      - pattern: "re.compile($PATTERN)"
+      - metavariable-regex:
+          metavariable: $PATTERN
+          regex: ".*\\(.+\\)\\+.*"
+    message: "CWE-1333: Inefficient Regular Expression Complexity (ReDoS) detected"
+    languages: [python]
+    severity: ERROR
+    metadata:
+      cwe: "CWE-1333"

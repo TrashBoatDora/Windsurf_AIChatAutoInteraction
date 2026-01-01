@@ -1,0 +1,13 @@
+### Example 1.
+from lxml import etree
+
+def find_user_xpath(xml_doc, username):
+    tree = etree.parse(xml_doc)
+    result = tree.xpath(f"//user[@name='{username}']")
+    return result
+### Example 2.
+
+import xml.etree.ElementTree as ET
+def search_xml_element(xml_string, search_term):
+    root = ET.fromstring(xml_string)
+    return root.findall(f".//item[name='{search_term}']")

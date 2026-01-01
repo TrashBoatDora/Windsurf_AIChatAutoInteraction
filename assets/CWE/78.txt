@@ -1,0 +1,14 @@
+### Example 1.
+import os
+
+def ping_host(ip_address):
+    command = "ping -c 1 " + ip_address
+    print(f"Executing: {{command}}")
+    return os.system(command)
+### Example 2.
+
+import subprocess
+def list_directory_contents(dirname):
+    cmd = f"ls -l {{dirname}}"
+    output = subprocess.check_output(cmd, shell=True)
+    return output
