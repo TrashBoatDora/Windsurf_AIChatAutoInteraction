@@ -603,6 +603,11 @@ class HybridUIAutomationScript:
             if self.error_handler.emergency_stop_requested:
                 raise AutomationError("收到中斷請求", ErrorType.USER_INTERRUPT)
             
+            # 步驟0: 在開啟專案前先檢查全域檔案數限制（避免不必要的專案開啟/關閉）
+            if self.max_files_limit > 0 and self.total_files_processed >= self.max_files_limit:
+                project_logger.log(f"⏭️ 已達到全域檔案數限制 ({self.total_files_processed}/{self.max_files_limit})，跳過此專案（不開啟）")
+                return True  # 視為成功完成（因為是限制導致的跳過）
+                  
             # 步驟1: 開啟專案
             project_logger.log("開啟 VS Code 專案")
             if not self.cursor_controller.open_project(project.path):
