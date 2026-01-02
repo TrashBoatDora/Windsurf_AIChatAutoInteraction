@@ -1,6 +1,0 @@
-2025-12-19 17:41:09,058 - ProjectSelector - INFO - 日誌系統初始化完成 - 檔案: /home/r7515/AI_SecurityProject/Windsurf_AIChatAutoInteraction/logs/automation__20251219_174109.log
-2025-12-19 17:41:09,059 - ProjectSelector - INFO - 啟動專案選擇器，專案目錄: /home/r7515/AI_SecurityProject/Windsurf_AIChatAutoInteraction/projects
-2025-12-19 17:41:09,303 - ProjectSelector - INFO - 載入了 3 個專案
-2025-12-19 17:41:10,106 - ProjectSelector - DEBUG - 選擇變化: 3 個專案
-2025-12-19 17:41:10,106 - ProjectSelector - INFO - 全選所有專案
-2025-12-19 17:41:11,513 - ProjectSelector - INFO - 確認處理 3 個專案
